@@ -1,0 +1,47 @@
+import { useEffect, useState } from 'react';
+import { Ctx } from './context.js';
+import { load, save, fresh } from './lib/storage.js';
+import Sidebar from './components/Sidebar.jsx';
+import Modal from './components/Modal.jsx';
+import Step0 from './steps/Step0.jsx';
+import Step1 from './steps/Step1.jsx';
+import Step2 from './steps/Step2.jsx';
+import Step3 from './steps/Step3.jsx';
+import Step4 from './steps/Step4.jsx';
+import Step5 from './steps/Step5.jsx';
+
+const STEPS = [Step0, Step1, Step2, Step3, Step4, Step5];
+
+export default function App() {
+  const [S, setS] = useState(load);
+  const [sel, setSel] = useState(null);
+  const [conn, setConn] = useState(false);
+  const [first, setFirst] = useState(null);
+  const [cd, setCd] = useState('1:M');
+  const [fitTick, setFt] = useState(0);
+  const [md, setMd] = useState(null);
+
+  useEffect(() => save(S), [S]); // persistencia en LocalStorage
+
+  const upd = (fn) => setS((p) => { const n = structuredClone(p); fn(n); return n; });
+  const ask = (msg, fn) => setMd({ msg, fn });
+  const go = (i) => {
+    if (i > 0 && !S.p) { ask('Primero crea el proyecto.'); i = 0; }
+    setConn(false); setFirst(null);
+    upd((n) => { n.step = i; });
+    window.scrollTo(0, 0);
+  };
+  const reset = () => { setS(fresh()); setSel(null); setConn(false); setFirst(null); };
+  const ctx = { S, upd, ask, go, reset, sel, setSel, conn, setConn, first, setFirst, cd, setCd, fitTick, bumpFit: () => setFt((x) => x + 1) };
+  const Cur = STEPS[S.step] || Step0;
+
+  return (
+    <Ctx.Provider value={ctx}>
+      <div className="app">
+        <Sidebar />
+        <main><Cur /></main>
+      </div>
+      {md && <Modal md={md} close={() => setMd(null)} />}
+    </Ctx.Provider>
+  );
+}
