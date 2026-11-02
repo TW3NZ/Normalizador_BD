@@ -15,7 +15,7 @@ Herramienta web, 100 % en español, para realizar de forma visual el proceso de 
 ## Requisitos
 
 - **Node.js 18 o superior** (recomendado: Node 20 o 22 LTS).
-- Funciona en macOS con Apple Silicon (M1): no hay dependencias nativas.
+-  no hay dependencias nativas.
 
 Instalar Node en el Mac (si no lo tienes):
 
