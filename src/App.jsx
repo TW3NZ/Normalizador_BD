@@ -22,7 +22,7 @@ export default function App() {
   const [md, setMd] = useState(null);
   const [toast, setToast] = useState(false);
 
-  useEffect(() => save(S), [S]); // persistencia en LocalStorage
+  useEffect(() => { save(S); }, [S]); // persistencia en LocalStorage
 
   const upd = (fn) => setS((p) => { const n = structuredClone(p); fn(n); return n; });
   const createProject = (project) => {
