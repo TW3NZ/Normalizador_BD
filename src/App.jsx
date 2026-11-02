@@ -45,9 +45,22 @@ export default function App() {
 
   return (
     <Ctx.Provider value={ctx}>
-      <div className="app">
-        <Sidebar />
-        <main><Cur /></main>
+      <div className="app-shell">
+        <header className="topbar">
+          <div className="brand-lockup">
+            <span className="brand-mark" aria-hidden="true">NB</span>
+            <span className="brand-copy"><strong>Normalizador BD</strong><small>Modelado relacional · herramienta académica</small></span>
+          </div>
+          <div className="topbar-context">
+            <span className="context-label">PROYECTO ACTUAL</span>
+            <strong>{S.p?.name || 'Sin proyecto seleccionado'}</strong>
+          </div>
+          <span className="academic-badge"><i /> Espacio de trabajo</span>
+        </header>
+        <div className="app">
+          <Sidebar />
+          <main><Cur /></main>
+        </div>
       </div>
       {toast && <ProjectToast onClose={() => setToast(false)} />}
       {md && <Modal md={md} close={() => setMd(null)} />}
