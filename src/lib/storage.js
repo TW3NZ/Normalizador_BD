@@ -12,7 +12,8 @@ export function load() {
 export function save(S) {
   try {
     localStorage.setItem(KEY, JSON.stringify(S));
+    return true;
   } catch (e) {
-    /* almacenamiento no disponible */
+    return false;
   }
 }

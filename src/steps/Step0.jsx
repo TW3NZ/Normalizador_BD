@@ -1,15 +1,23 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useC } from '../context.js';
 
 export default function Step0() {
-  const { S, upd, ask, go, reset } = useC();
+  const { S, upd, ask, go, reset, createProject, notifyProjectCreated } = useC();
   const [f, setF] = useState(S.p || { name: '', author: '', date: new Date().toISOString().slice(0, 10) });
+  const submitting = useRef(false);
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
   const submit = () => {
     if (!f.name.trim() || !f.author.trim() || !f.date) return ask('Completa nombre del proyecto, nombre completo y fecha.');
+    if (submitting.current) return;
+    submitting.current = true;
     const nuevo = !S.p;
-    upd((n) => { n.p = { name: f.name.trim(), author: f.author.trim(), date: f.date }; });
-    if (nuevo) go(1); else ask('Cambios guardados.');
+    const project = { name: f.name.trim(), author: f.author.trim(), date: f.date };
+    const saved = nuevo ? createProject(project) : (upd((n) => { n.p = project; }), true);
+    if (nuevo) {
+      go(1, true);
+      if (saved) notifyProjectCreated();
+    } else ask('Cambios guardados.');
+    if (!nuevo) submitting.current = false;
   };
   return (
     <div className="card">
